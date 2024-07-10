@@ -133,7 +133,7 @@ export default function Home() {
             </div>
             </form>
             {allProducts && allProducts?.map((p) => (
-              <div className="w-full flex flex-col gap-2 justify-between items-center border-[1px] border-gray-500 rounded-xl p-2">
+              <div key={p.name} className="w-full flex flex-col gap-2 justify-between items-center border-[1px] border-gray-500 rounded-xl p-2">
 
                 <div className="w-full gap-2 flex justify-between items-center">
                   <div className="productname flex flex-col w-[40%]">
