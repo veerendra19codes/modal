@@ -1,113 +1,173 @@
-import Image from "next/image";
+"use client";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react"
+
+
+
+
 
 export default function Home() {
+  const [product, setProduct]= useState({name:"",issuance:"", serialnumber:"", usage:"", reason:""})
+  const [allProducts, setAllProducts] =  useState([]);
+  const [error, setError] = useState({nameError:"",issuanceError:"", serialnumberError:"", usageError:"", reasonError:""})
+
+  const checkValidation = () => {
+    if(!product.name) {
+      setError((prev) => ({...prev, nameError: "name is required"}))
+      return false;
+    }
+    if(!product.issuance) {
+      setError((prev) => ({...prev, issuanceError: "issuance is required"}))
+      return false;
+
+    }
+    if(!product.serialnumber) {
+      setError((prev) => ({...prev, serialnumberError: "serialnumber is required"}))
+      return false;
+
+    }
+    if(!product.usage) {
+      setError((prev) => ({...prev, usageError: "usage is required"}))
+      return false;
+
+    }
+    if(!product.reason) {
+      setError((prev) => ({...prev, reasonError: "reason is required"}))
+      return false;
+
+    }
+    return true;
+  }
+
+  const handleProductChange = (e) => {
+    setProduct((prev) => ({...prev, [e.target.name]: e.target.value}));
+    console.log("product:", product)
+    setError({nameError:"",issuanceError:"", serialnumberError:"", usageError:"", reasonError:""})
+  }
+
+   const handleProductSelectChange = (value) => {
+    setProduct((prev) => ({...prev, name: value}));
+    setError((prev) => ({...prev, nameError: ""}));
+  }
+
+
+  const handleAddProduct = (e) => {
+    e.preventDefault();
+    console.log("adding")
+
+    if(checkValidation()) {
+      setAllProducts((prevProducts) => [...allProducts, product]);
+      setProduct({name:"",issuance:"", serialnumber:"", usage:"", reason:""})
+    }
+  }
+
+  useEffect(() => {
+    console.log("allProducts", allProducts);
+  },[allProducts,product]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <Dialog >
+        <DialogTrigger className="border-[1px] border-gray-500 rounded-xl p-2">Manage Inventory</DialogTrigger>
+        <DialogContent className="bg-white overflow-y-auto max-h-[600px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl lg:text-3xl">Check In/Check Out</DialogTitle>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+            <form onSubmit={handleAddProduct} className="w-full flex flex-col gap-2">
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+            <div className="flex gap-2 justify-between items-center">
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+                <Select className="w-[40%] rounded-xl" onValueChange={handleProductSelectChange}>
+                  <SelectTrigger className="w-[180px] rounded-xl">
+                    <SelectValue placeholder="product" className="text-[12px] lg:text-normal" />
+                  </SelectTrigger>
+                  <SelectContent name="name" value={product.name} className="bg-white text-[12px] lg:text-normal" >
+                    <SelectItem value="product1">Product 1</SelectItem>
+                    <SelectItem value="product2">Product 2</SelectItem>
+                    <SelectItem value="product3">Product 3</SelectItem>
+                  </SelectContent>
+                </Select>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+                <Input placeholder="issuance" name="issuance" value={product.issuance} className="w-[40%] rounded-xl text-[12px] lg:text-sm text-gray-500" onChange={(e) => handleProductChange(e)}/>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+                <Input placeholder="sr." type="number" name="serialnumber" value={product.serialnumber} className="w-[20%] rounded-xl text-[12px] lg:text-sm text-gray-500" onChange={(e) => handleProductChange(e)}/>
+            </div>
+                {error.nameError && <p className="text-red-500">{error.nameError}</p>}
+                {error.serialnumberError && <p className="text-red-500">{error.serialnumberError}</p>}
+                {error.issuanceError && <p className="text-red-500">{error.issuanceError}</p>}
+
+
+
+            <div className="w-full flex flex-col gap-1">
+              <Textarea placeholder="Type the usage of product" name="usage" value={product.usage}  className="rounded-xl text-[12px] lg:text-sm text-gray-500" onChange={(e) => handleProductChange(e)}/>
+              {error.usageError && <p className="text-red-500">{error.usageError}</p>}
+            </div>
+
+            <div className="w-full flex flex-col gap-1">
+              <Textarea placeholder="Type the reason for the request" name="reason" value={product.reason} className="rounded-xl text-[12px] lg:text-sm text-gray-500" onChange={(e) => handleProductChange(e)}/>
+              {error.reasonError && <p className="text-red-500">{error.reasonError}</p>}
+            </div>
+
+
+            <div className="w-full flex gap-2">
+              <Button variant="primary" className="bg-blue-500 w-1/2 text-white rounded-xl hover:text-blue-400" type="submit">Submit</Button>
+              <Button variant="destructive" className="bg-red-500 w-1/2 text-white rounded-xl hover:text-red-400">Cancel</Button>
+            </div>
+            </form>
+            {allProducts && allProducts?.map((p) => (
+              <div className="w-full flex flex-col gap-2 justify-between items-center border-[1px] border-gray-500 rounded-xl p-2">
+
+                <div className="w-full gap-2 flex justify-between items-center">
+                  <div className="productname flex flex-col w-[40%]">
+                    <label className="text-start font-bold text-[8px]  lg:text-sm">Product name</label>
+                    <p className="text-start text-gray-500 text-[12px] lg:text-xl">{p.name}</p>
+                  </div>
+                  <div className="productissuance flex flex-col w-[40%]">
+                    <label className="text-start font-bold text-[8px]  lg:text-sm">Product issuance</label>
+                    <p className="text-start text-gray-500 text-[12px] lg:text-xl">{p.issuance}</p>
+                  </div>
+                  <div className="productserialnumber flex flex-col  w-[20%]">
+                    <label className="text-start font-bold text-[8px]  lg:text-sm">Sr. No.</label>
+                    <p className="text-start text-gray-500 text-[12px] lg:text-xl">{p.serialnumber}</p>
+                  </div>
+                </div>
+
+                <div className="productuasge flex flex-col  w-full">
+                  <label className="text-start font-bold text-[8px]  lg:text-sm">Usage</label>
+                  <p className="text-start text-gray-500 text-[12px] lg:text-xl">{p.usage}</p>
+                </div>
+
+                <div className="productreason flex flex-col w-full">
+                  <label className="text-start font-bold text-[8px]  lg:text-sm">Reason</label>
+                  <p className="text-start text-gray-500 text-[12px] lg:text-xl">{p.reason}</p>
+                </div>
+
+              </div>
+            ))}
+
+            
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </div>
+
   );
 }
